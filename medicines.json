@@ -5,7 +5,7 @@
         "timing": "Morning",
         "total": 30,
         "remaining": 28,
-        "taken_today": true
+        "taken_today": false
     },
     {
         "name": "Cerna",
@@ -13,7 +13,7 @@
         "timing": "Morning",
         "total": 30,
         "remaining": 29,
-        "taken_today": true,
+        "taken_today": false,
         "notes": ""
     },
     {
@@ -22,7 +22,7 @@
         "timing": "Morning",
         "total": 30,
         "remaining": 29,
-        "taken_today": true
+        "taken_today": false
     },
     {
         "name": "paracetamol",
@@ -30,7 +30,7 @@
         "timing": "Morning",
         "total": 30,
         "remaining": 29,
-        "taken_today": true
+        "taken_today": false
     },
     {
         "name": "Cerna",
@@ -38,7 +38,7 @@
         "timing": "After Food",
         "total": 5,
         "remaining": 4,
-        "taken_today": true,
+        "taken_today": false,
         "notes": ""
     }
 ]
