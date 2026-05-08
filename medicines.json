@@ -4,16 +4,16 @@
         "dosage": "15",
         "timing": "Morning",
         "total": 30,
-        "remaining": 28,
-        "taken_today": false
+        "remaining": 27,
+        "taken_today": true
     },
     {
         "name": "Cerna",
         "dosage": "250",
         "timing": "Morning",
         "total": 30,
-        "remaining": 29,
-        "taken_today": false,
+        "remaining": 28,
+        "taken_today": true,
         "notes": ""
     },
     {
@@ -37,8 +37,8 @@
         "dosage": "50",
         "timing": "After Food",
         "total": 5,
-        "remaining": 4,
-        "taken_today": false,
+        "remaining": 3,
+        "taken_today": true,
         "notes": ""
     }
 ]

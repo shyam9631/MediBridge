@@ -17,14 +17,22 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display: none;}
+    
     .block-container {
         max-width: 420px !important;
         padding: 0 !important;
         margin: 0 auto !important;
     }
-    .stApp {background-color: #0a0a0f;}
+    
+    .stApp {
+        background: linear-gradient(180deg, #0a0a0f 0%, #0d0d1a 50%, #0a0a0f 100%);
+    }
+    
+    /* Animated gradient buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        background: linear-gradient(135deg, #667eea, #764ba2, #667eea) !important;
+        background-size: 200% 200% !important;
+        animation: gradientShift 3s ease infinite !important;
         color: white !important;
         border-radius: 25px !important;
         border: none !important;
@@ -32,8 +40,48 @@ st.markdown("""
         font-size: 15px !important;
         padding: 14px !important;
         width: 100% !important;
-        box-shadow: 0 4px 20px rgba(102,126,234,0.4) !important;
+        box-shadow: 0 4px 20px rgba(102,126,234,0.5) !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 0.5px !important;
     }
+    
+    .stButton > button:hover {
+        transform: translateY(-3px) scale(1.02) !important;
+        box-shadow: 0 10px 30px rgba(102,126,234,0.7) !important;
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0px) scale(0.98) !important;
+    }
+    
+    /* Gradient animation */
+    @keyframes gradientShift {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+    
+    /* Glowing pulse animation */
+    @keyframes glowPulse {
+        0% {box-shadow: 0 0 10px rgba(102,126,234,0.3);}
+        50% {box-shadow: 0 0 25px rgba(102,126,234,0.7);}
+        100% {box-shadow: 0 0 10px rgba(102,126,234,0.3);}
+    }
+    
+    /* Fade in animation */
+    @keyframes fadeInUp {
+        from {opacity: 0; transform: translateY(20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    
+    /* Float animation */
+    @keyframes float {
+        0% {transform: translateY(0px);}
+        50% {transform: translateY(-8px);}
+        100% {transform: translateY(0px);}
+    }
+    
+    /* Input fields */
     .stTextInput > div > div > input {
         border-radius: 15px !important;
         border: 2px solid #2a2a3e !important;
@@ -41,52 +89,94 @@ st.markdown("""
         color: white !important;
         padding: 14px !important;
         font-size: 15px !important;
+        transition: all 0.4s ease !important;
+        animation: fadeInUp 0.5s ease !important;
     }
+    
+    .stTextInput > div > div > input:focus {
+        border: 2px solid #667eea !important;
+        box-shadow: 0 0 20px rgba(102,126,234,0.4) !important;
+        transform: scale(1.01) !important;
+    }
+    
+    /* Select box */
     .stSelectbox > div > div {
         background-color: #13131f !important;
         border-radius: 15px !important;
         border: 2px solid #2a2a3e !important;
         color: white !important;
+        transition: all 0.3s ease !important;
     }
+    
+    /* Number input */
     .stNumberInput > div > div > input {
         background-color: #13131f !important;
         border-radius: 15px !important;
         border: 2px solid #2a2a3e !important;
         color: white !important;
     }
+    
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        background-color: #13131f !important;
+        background: linear-gradient(135deg, #13131f, #1a1a2e) !important;
         border-radius: 20px !important;
         padding: 5px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
     }
+    
     .stTabs [data-baseweb="tab"] {
         border-radius: 15px !important;
-        color: #888 !important;
+        color: #666 !important;
         font-weight: 600 !important;
+        transition: all 0.3s ease !important;
     }
+    
     .stTabs [aria-selected="true"] {
         background: linear-gradient(135deg, #667eea, #764ba2) !important;
         color: white !important;
         border-radius: 15px !important;
+        box-shadow: 0 4px 15px rgba(102,126,234,0.4) !important;
     }
+    
+    /* Metrics */
     [data-testid="metric-container"] {
-        background: #13131f !important;
+        background: linear-gradient(135deg, #13131f, #1a1a2e) !important;
         border-radius: 20px !important;
         padding: 15px !important;
         border: 1px solid #2a2a3e !important;
+        animation: glowPulse 3s ease infinite !important;
+        transition: all 0.3s ease !important;
     }
+    
+    [data-testid="metric-container"]:hover {
+        transform: translateY(-3px) !important;
+        border-color: #667eea !important;
+    }
+    
+    /* Text area */
     .stTextArea > div > div > textarea {
         background-color: #13131f !important;
         border-radius: 15px !important;
         border: 2px solid #2a2a3e !important;
         color: white !important;
+        transition: all 0.3s ease !important;
     }
+    
+    /* Form */
     [data-testid="stForm"] {
-        background: #13131f !important;
-        border-radius: 20px !important;
-        padding: 20px !important;
+        background: linear-gradient(135deg, #13131f, #1a1a2e) !important;
+        border-radius: 25px !important;
+        padding: 25px !important;
         border: 1px solid #2a2a3e !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        animation: fadeInUp 0.5s ease !important;
     }
+
+    /* Divider */
+    hr {border-color: #1a1a2e !important;}
+
+    /* Spinner */
+    .stSpinner > div {border-top-color: #667eea !important;}
     </style>
 """, unsafe_allow_html=True)
 
@@ -182,11 +272,29 @@ def auth_page():
     role = st.session_state.get("selected_role", "senior")
     role_emoji = "👴" if role == "senior" else "👨‍👩‍👧"
     role_name = "Senior Citizen" if role == "senior" else "Family Member"
+    role_color = "#667eea" if role == "senior" else "#11998e"
 
     st.markdown(f"""
-        <div style="background: #1a1a2e; border-radius: 20px; padding: 15px; text-align: center; border: 1px solid #667eea50; margin-bottom: 20px;">
-            <span style="font-size: 1.5em;">{role_emoji}</span>
-            <p style="color: #667eea; margin: 5px 0 0 0; font-weight: 700;">{role_name}</p>
+        <div style="
+            background: linear-gradient(135deg, {role_color}20, {role_color}10);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid {role_color}50;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.5s ease;
+            box-shadow: 0 8px 25px {role_color}20;">
+            <div style="
+                font-size: 3em;
+                animation: float 3s ease infinite;">
+                {role_emoji}
+            </div>
+            <h2 style="color: {role_color}; margin: 10px 0 5px 0; font-weight: 800;">
+                {role_name}
+            </h2>
+            <p style="color: #666; margin: 0; font-size: 0.85em;">
+                Welcome to MediBridge!
+            </p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -204,33 +312,77 @@ def auth_page():
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.session_state.auth_mode == "login":
-        st.markdown("### 🔑 Login")
+        st.markdown("""
+            <div style="text-align: center; margin-bottom: 20px; animation: fadeInUp 0.6s ease;">
+                <h2 style="color: white; margin: 0; font-size: 1.5em;">
+                    Welcome Back! 👋
+                </h2>
+                <p style="color: #555; margin: 5px 0 0 0; font-size: 0.85em;">
+                    Login to continue
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
         with st.form("login_form"):
             username = st.text_input("👤 Username")
             password = st.text_input("🔒 Password", type="password")
-            login_btn = st.form_submit_button("Login to MediBridge", use_container_width=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+            login_btn = st.form_submit_button(
+                "🚀 Login to MediBridge",
+                use_container_width=True
+            )
             if login_btn:
                 if username and password:
                     success, user_data, msg = login_user(username, password)
                     if success:
                         if user_data["role"] != role:
-                            st.error(f"❌ This account is for {user_data['role']}! Select correct role.")
+                            st.error(f"❌ Wrong role! This account is for {user_data['role']}!")
                         else:
-                            st.session_state.user = {"username": username, "name": user_data["name"], "role": user_data["role"]}
+                            st.session_state.user = {
+                                "username": username,
+                                "name": user_data["name"],
+                                "role": user_data["role"]
+                            }
                             st.session_state.page = "dashboard"
                             st.rerun()
                     else:
                         st.error(f"❌ {msg}")
                 else:
-                    st.error("❌ Fill all fields!")
+                    st.error("❌ Please fill all fields!")
+
+        st.markdown("""
+            <div style="text-align: center; margin-top: 15px;">
+                <p style="color: #444; font-size: 0.8em;">
+                    Don't have an account? Click Register above!
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
     else:
-        st.markdown("### 📝 Register")
+        st.markdown("""
+            <div style="text-align: center; margin-bottom: 20px; animation: fadeInUp 0.6s ease;">
+                <h2 style="color: white; margin: 0; font-size: 1.5em;">
+                    Create Account! ✨
+                </h2>
+                <p style="color: #555; margin: 5px 0 0 0; font-size: 0.85em;">
+                    Join MediBridge today
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+
         with st.form("register_form"):
             name = st.text_input("😊 Your Full Name")
             username = st.text_input("👤 Choose Username")
-            password = st.text_input("🔒 Choose Password", type="password")
-            confirm = st.text_input("🔒 Confirm Password", type="password")
-            register_btn = st.form_submit_button("Create Account", use_container_width=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                password = st.text_input("🔒 Password", type="password")
+            with col2:
+                confirm = st.text_input("🔒 Confirm", type="password")
+            st.markdown("<br>", unsafe_allow_html=True)
+            register_btn = st.form_submit_button(
+                "✨ Create My Account",
+                use_container_width=True
+            )
             if register_btn:
                 if name and username and password and confirm:
                     if password != confirm:
@@ -261,19 +413,19 @@ def make_medicine_card(med, index, show_btn=True):
     if med.get("notes"):
         notes_part = "<p style=\"color: #555; margin: 4px 0; font-size: 0.75em;\">📝 " + str(med["notes"]) + "</p>"
 
-    html = "<div style=\"background: #13131f; border-radius: 20px; padding: 16px; border: 1px solid #2a2a3e; border-left: 4px solid " + border + "; margin-bottom: 12px;\">"
+    html = "<div style=\"background: linear-gradient(135deg, #13131f, #1a1a2e); border-radius: 20px; padding: 18px; border: 1px solid #2a2a3e; border-left: 4px solid " + border + "; margin-bottom: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: all 0.3s ease;\">"
     html += "<div style=\"display: flex; justify-content: space-between; align-items: center;\">"
     html += "<div>"
-    html += "<h3 style=\"color: white; margin: 0; font-size: 1em;\">💊 " + str(med["name"]) + "</h3>"
-    html += "<p style=\"color: #888; margin: 4px 0; font-size: 0.85em;\">" + str(med["dosage"]) + " • ⏰ " + str(med["timing"]) + "</p>"
+    html += "<h3 style=\"color: white; margin: 0; font-size: 1.05em; font-weight: 700;\">💊 " + str(med["name"]) + "</h3>"
+    html += "<p style=\"color: #777; margin: 5px 0; font-size: 0.85em;\">" + str(med["dosage"]) + " • ⏰ " + str(med["timing"]) + "</p>"
     html += "<p style=\"color: #E74C3C; margin: 4px 0; font-size: 0.8em; font-weight: 700;\">📦 " + str(med["remaining"]) + " tablets left</p>"
     html += notes_part
     html += "</div>"
-    html += "<div style=\"background: " + status_color + "20; padding: 6px 12px; border-radius: 20px; border: 1px solid " + status_color + "50;\">"
+    html += "<div style=\"background: linear-gradient(135deg, " + status_color + "30, " + status_color + "10); padding: 8px 14px; border-radius: 20px; border: 1px solid " + status_color + "50; text-align: center;\">"
     html += "<p style=\"color: " + status_color + "; margin: 0; font-size: 0.75em; font-weight: 700;\">" + status + "</p>"
     html += "</div></div></div>"
     st.markdown(html, unsafe_allow_html=True)
-
+    
 def senior_dashboard():
     user = st.session_state.user
     st.markdown(f"""
@@ -283,7 +435,7 @@ def senior_dashboard():
                     <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.75em;">Good day! 👋</p>
                     <h2 style="color: white; margin: 2px 0; font-size: 1.2em; font-weight: 700;">{user['name']}</h2>
                 </div>
-                <div style="text-align: right;">
+                <div style="text-align: rightdef;">
                     <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.75em;">💊 MediBridge</p>
                     <p style="color: white; margin: 0; font-size: 0.8em; font-weight: 600;">Senior Citizen 👴</p>
                 </div>

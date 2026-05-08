@@ -3,5 +3,10 @@
         "password": "shyam@1300",
         "role": "senior",
         "name": "Shyam Sundar"
+    },
+    "Srushti": {
+        "password": "sruu@1300",
+        "role": "family",
+        "name": "Srushti V"
     }
 }
