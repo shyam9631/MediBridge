@@ -43,5 +43,15 @@
         "medicine": "Cerna",
         "action": "Taken",
         "time": "2026-05-10 14:45"
+    },
+    {
+        "medicine": "Cerna",
+        "action": "Taken",
+        "time": "2026-05-10 19:35"
+    },
+    {
+        "medicine": "Paracetamol",
+        "action": "Deleted",
+        "time": "2026-05-10 19:39"
     }
 ]

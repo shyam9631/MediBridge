@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MediBridge 💊</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;
+  --bg2:#0a0d1a;
+  --card:#0a0f1f;
+  --card2:#0a1a2e;
+  --border:#0f1f35;
+  --blue:#0099ff;
+  --blue2:#00d4ff;
+  --green:#2ecc71;
+  --red:#e74c3c;
+  --yellow:#f39c12;
+  --text:#ffffff;
+  --muted:#555;
+  --muted2:#888;
+  --font:'Sora',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 50%,var(--bg) 100%);color:var(--text);min-height:100vh;max-width:440px;margin:0 auto}
+
+/* ── Animations ────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 10px rgba(0,153,255,.3)}50%{box-shadow:0 0 25px rgba(0,153,255,.7)}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-up{animation:fadeUp .5s ease}
+
+/* ── Pages ─────────────────────────────────────────────── */
+.page{display:none;padding:0 0 40px 0}
+.page.active{display:block}
+
+/* ── Buttons ───────────────────────────────────────────── */
+.btn{width:100%;padding:14px;border:none;border-radius:25px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;letter-spacing:.5px}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2),var(--blue));background-size:200%;animation:gradShift 3s ease infinite;color:#fff;box-shadow:0 4px 20px rgba(0,153,255,.5)}
+.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 30px rgba(0,153,255,.7)}
+.btn-primary:active{transform:scale(.98)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:25px}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn-danger{background:linear-gradient(135deg,var(--red),#c0392b);color:#fff;box-shadow:0 4px 15px rgba(231,76,60,.4)}
+.btn-green{background:linear-gradient(135deg,var(--green),#27ae60);color:#fff;box-shadow:0 4px 15px rgba(46,204,113,.4)}
+.btn-sm{padding:8px 16px;width:auto;font-size:13px;border-radius:20px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* ── Inputs ────────────────────────────────────────────── */
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:12px;color:var(--muted2);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.input-group input,.input-group select,.input-group textarea{
+  width:100%;padding:14px;background:var(--card);border:2px solid var(--card2);
+  border-radius:15px;color:var(--text);font-family:var(--font);font-size:15px;
+  outline:none;transition:all .3s
+}
+.input-group input:focus,.input-group select:focus,.input-group textarea:focus{border-color:var(--blue);box-shadow:0 0 20px rgba(0,153,255,.3)}
+.input-group select option{background:var(--card)}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── Card ──────────────────────────────────────────────── */
+.card{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:14px;animation:fadeUp .4s ease}
+.card-glow{animation:glow 3s ease infinite}
+
+/* ── Logo / Header ─────────────────────────────────────── */
+.logo-wrap{text-align:center;padding:30px 20px 10px}
+.logo-img{width:130px;height:130px;border-radius:50%;object-fit:cover;border:3px solid var(--blue);box-shadow:0 8px 30px rgba(0,153,255,.5);animation:float 3s ease infinite}
+.logo-icon-fallback{display:inline-flex;align-items:center;justify-content:center;width:90px;height:90px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:20px;font-size:2.5rem;margin-bottom:8px;animation:float 3s ease infinite}
+.logo-title{background:linear-gradient(135deg,var(--blue),var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2em;font-weight:800;margin:6px 0 2px}
+.logo-sub{color:var(--muted);font-size:.72em;letter-spacing:2px}
+
+/* ── Top bar ───────────────────────────────────────────── */
+.topbar{background:linear-gradient(135deg,var(--blue),var(--blue2));padding:15px 20px;border-radius:0 0 25px 25px;margin-bottom:20px;box-shadow:0 8px 25px rgba(0,153,255,.4);display:flex;justify-content:space-between;align-items:center}
+.topbar-name{color:#fff;font-weight:700;font-size:1.1em}
+.topbar-role{color:rgba(255,255,255,.75);font-size:.75em;margin-top:2px}
+.topbar-right{text-align:right;color:rgba(255,255,255,.75);font-size:.75em}
+
+/* ── Tabs ──────────────────────────────────────────────── */
+.tabs{display:flex;background:linear-gradient(135deg,var(--card),var(--card2));border-radius:20px;padding:5px;margin:0 16px 20px;box-shadow:0 4px 15px rgba(0,0,0,.3);overflow-x:auto;gap:4px}
+.tab-btn{flex:1;padding:10px 8px;border:none;border-radius:15px;background:transparent;color:var(--muted);font-family:var(--font);font-weight:600;font-size:12px;cursor:pointer;transition:all .3s;white-space:nowrap}
+.tab-btn.active{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 4px 15px rgba(0,153,255,.4)}
+
+/* ── Tab content ───────────────────────────────────────── */
+.tab-content{display:none;padding:0 16px}
+.tab-content.active{display:block}
+
+/* ── Metrics row ───────────────────────────────────────── */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px;margin-bottom:20px}
+.metrics-4{grid-template-columns:repeat(4,1fr)}
+.metric{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:20px;padding:14px 10px;text-align:center;animation:glow 3s ease infinite;transition:transform .2s}
+.metric:hover{transform:translateY(-3px)}
+.metric-val{font-family:var(--mono);font-size:1.6em;font-weight:700;color:var(--blue)}
+.metric-label{font-size:.72em;color:var(--muted);margin-top:4px}
+
+/* ── Medicine card ─────────────────────────────────────── */
+.med-card{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:20px;padding:18px;border:1px solid var(--border);border-left:4px solid var(--blue);margin-bottom:14px;box-shadow:0 8px 25px rgba(0,0,0,.3);animation:fadeUp .4s ease}
+.med-card.taken{border-left-color:var(--green)}
+.med-card.low{border-left-color:var(--yellow)}
+.med-name{color:#fff;font-weight:700;font-size:1em;margin-bottom:3px}
+.med-meta{color:var(--muted2);font-size:.82em;margin-bottom:3px}
+.med-remaining{color:var(--red);font-size:.78em;font-weight:700;margin-bottom:3px}
+.med-notes{color:var(--muted);font-size:.75em}
+.med-status{padding:7px 13px;border-radius:20px;font-size:.75em;font-weight:700;white-space:nowrap}
+.med-status.taken{background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.4);color:var(--green)}
+.med-status.pending{background:rgba(0,153,255,.1);border:1px solid rgba(0,153,255,.3);color:var(--blue)}
+.med-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.med-actions{display:flex;gap:8px;margin-top:12px}
+
+/* ── Chat ──────────────────────────────────────────────── */
+.chat-box{max-height:320px;overflow-y:auto;margin-bottom:12px;padding-right:4px}
+.chat-msg-user{background:linear-gradient(135deg,var(--blue),var(--blue2));padding:10px 14px;border-radius:18px 18px 4px 18px;margin:6px 0 6px 20%;text-align:right;font-size:.85em}
+.chat-msg-bot{background:linear-gradient(135deg,var(--card),var(--card2));padding:10px 14px;border-radius:18px 18px 18px 4px;margin:6px 20% 6px 0;border:1px solid var(--border);font-size:.85em}
+.quick-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+
+/* ── History record ────────────────────────────────────── */
+.history-record{background:linear-gradient(135deg,var(--card),var(--card2));padding:12px 15px;border-radius:15px;border-left:3px solid var(--blue);margin-bottom:8px}
+.history-record.taken{border-left-color:var(--green)}
+.history-record.missed{border-left-color:var(--red)}
+.history-record.deleted{border-left-color:var(--red)}
+
+/* ── Prescription card ─────────────────────────────────── */
+.rx-card{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:20px;padding:20px;border:1px solid var(--border);border-left:4px solid var(--blue);margin-bottom:20px}
+.rx-card h3{color:#fff;margin-bottom:10px}
+.rx-card p{color:var(--muted2);margin:5px 0;font-size:.85em}
+
+/* ── Role selector cards ───────────────────────────────── */
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px;margin-bottom:16px}
+.role-card{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:20px;padding:20px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.3)}
+.role-card .emoji{font-size:2.5em;animation:float 3s ease infinite;display:block;margin-bottom:8px}
+.role-card h3{color:#fff;font-size:.95em;font-weight:700;margin-bottom:4px}
+.role-card p{color:var(--muted);font-size:.78em;margin-bottom:12px}
+
+/* ── Auth tabs ─────────────────────────────────────────── */
+.auth-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 16px 20px}
+
+/* ── Toast ─────────────────────────────────────────────── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card2);border:1px solid var(--blue);border-radius:14px;padding:12px 22px;font-size:.88em;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;opacity:0}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.error{border-color:var(--red)}
+
+/* ── Loading spinner ───────────────────────────────────── */
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
+
+/* ── Empty state ───────────────────────────────────────── */
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .icon{font-size:3em;margin-bottom:12px}
+
+/* ── Misc ──────────────────────────────────────────────── */
+.px{padding-left:16px;padding-right:16px}
+.mb{margin-bottom:16px}
+.section-title{color:#fff;font-weight:700;font-size:1em;margin-bottom:14px}
+.divider{height:1px;background:var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     PAGE 1 — LANDING
+════════════════════════════════════════════════ -->
+<div class="page active" id="page-landing">
+  <div class="logo-wrap fade-up">
+    <div id="logo-container"></div>
+    <p class="logo-sub">CONNECTING HEALTHCARE SOLUTIONS</p>
+  </div>
+
+  <div class="card fade-up px" style="margin:16px;text-align:center">
+    <h2 style="font-size:1.2em;margin-bottom:8px">Welcome to MediBridge</h2>
+    <p style="color:var(--muted);font-size:.88em;line-height:1.6">Smart medicine tracking for senior citizens with real-time WhatsApp alerts for family</p>
+  </div>
+
+  <p style="text-align:center;color:var(--muted2);font-size:.9em;margin-bottom:12px;font-weight:600">👤 I am a...</p>
+  <div class="role-cards">
+    <div class="role-card">
+      <span class="emoji">👴</span>
+      <h3>Senior Citizen</h3>
+      <p>Track my medicines</p>
+      <button class="btn btn-primary btn-sm" onclick="selectRole('senior')">Select</button>
+    </div>
+    <div class="role-card">
+      <span class="emoji">👨‍👩‍👧</span>
+      <h3>Family Member</h3>
+      <p>Monitor loved ones</p>
+      <button class="btn btn-primary btn-sm" onclick="selectRole('family')">Select</button>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:.72em;margin-top:20px">Powered by AI • WhatsApp Notifications</p>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE 2 — AUTH
+════════════════════════════════════════════════ -->
+<div class="page" id="page-auth">
+  <div class="logo-wrap fade-up" id="auth-role-header"></div>
+
+  <div class="auth-toggle">
+    <button class="btn btn-primary" id="auth-login-btn" onclick="setAuthMode('login')">🔑 Login</button>
+    <button class="btn btn-outline" id="auth-register-btn" onclick="setAuthMode('register')">📝 Register</button>
+  </div>
+
+  <!-- Login form -->
+  <div id="form-login" class="px fade-up">
+    <div style="text-align:center;margin-bottom:20px">
+      <h2 style="font-size:1.4em">Welcome Back! 👋</h2>
+      <p style="color:var(--muted);font-size:.85em;margin-top:4px">Login to continue</p>
+    </div>
+    <div class="input-group"><label>Username</label><input type="text" id="login-username" placeholder="Your username"/></div>
+    <div class="input-group"><label>Password</label><input type="password" id="login-password" placeholder="Your password"/></div>
+    <button class="btn btn-primary mb" id="login-btn" onclick="doLogin()">🚀 Login to MediBridge</button>
+    <div id="login-error" style="color:var(--red);font-size:.85em;text-align:center;margin-bottom:12px"></div>
+  </div>
+
+  <!-- Register form -->
+  <div id="form-register" class="px fade-up" style="display:none">
+    <div style="text-align:center;margin-bottom:20px">
+      <h2 style="font-size:1.4em">Create Account! ✨</h2>
+      <p style="color:var(--muted);font-size:.85em;margin-top:4px">Join MediBridge today</p>
+    </div>
+    <div class="input-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your full name"/></div>
+    <div class="input-group"><label>Username</label><input type="text" id="reg-username" placeholder="Choose a username"/></div>
+    <div class="input-row">
+      <div class="input-group"><label>Password</label><input type="password" id="reg-password" placeholder="Password"/></div>
+      <div class="input-group"><label>Confirm</label><input type="password" id="reg-confirm" placeholder="Confirm"/></div>
+    </div>
+    <button class="btn btn-primary mb" id="register-btn" onclick="doRegister()">✨ Create My Account</button>
+    <div id="register-error" style="color:var(--red);font-size:.85em;text-align:center;margin-bottom:12px"></div>
+  </div>
+
+  <div class="px">
+    <button class="btn btn-outline" onclick="goTo('landing')">⬅️ Go Back</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE 3 — SENIOR DASHBOARD
+════════════════════════════════════════════════ -->
+<div class="page" id="page-senior">
+  <div class="topbar" id="senior-topbar">
+    <div>
+      <div style="color:rgba(255,255,255,.7);font-size:.72em">Good day! 👋</div>
+      <div class="topbar-name" id="senior-name">—</div>
+    </div>
+    <div class="topbar-right">
+      <div>💊 MediBridge</div>
+      <div style="font-weight:600">Senior Citizen 👴</div>
+    </div>
+  </div>
+
+  <div class="metrics" id="senior-metrics">
+    <div class="metric"><div class="metric-val" id="sm-total">0</div><div class="metric-label">💊 Total</div></div>
+    <div class="metric"><div class="metric-val" id="sm-taken" style="color:var(--green)">0</div><div class="metric-label">✅ Taken</div></div>
+    <div class="metric"><div class="metric-val" id="sm-left" style="color:var(--yellow)">0</div><div class="metric-label">⏳ Left</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('senior','medicines')">💊 Medicines</button>
+    <button class="tab-btn" onclick="switchTab('senior','prescription')">📋 Rx</button>
+    <button class="tab-btn" onclick="switchTab('senior','history')">📊 History</button>
+    <button class="tab-btn" onclick="switchTab('senior','medibot')">🤖 MediBot</button>
+    <button class="tab-btn" onclick="switchTab('senior','settings')">⚙️ Settings</button>
+  </div>
+
+  <!-- Medicines tab -->
+  <div class="tab-content active" id="senior-tab-medicines">
+    <p class="section-title">➕ Add Medicine</p>
+    <div class="card">
+      <div class="input-group"><label>Medicine Name</label><input type="text" id="med-name" placeholder="e.g. Metformin"/></div>
+      <div class="input-row">
+        <div class="input-group"><label>Dosage</label><input type="text" id="med-dosage" placeholder="e.g. 500mg"/></div>
+        <div class="input-group"><label>Tablets</label><input type="number" id="med-total" placeholder="30" min="1" max="500"/></div>
+      </div>
+      <div class="input-group"><label>Timing</label>
+        <select id="med-timing">
+          <option>Morning</option><option>Afternoon</option><option>Evening</option><option>Night</option>
+          <option>Morning & Night</option><option>Morning, Afternoon & Night</option>
+          <option>After Food</option><option>Before Food</option>
+        </select>
+      </div>
+      <div class="input-group"><label>Notes (optional)</label><input type="text" id="med-notes" placeholder="Any notes..."/></div>
+      <button class="btn btn-primary" id="add-med-btn" onclick="addMedicine()">➕ Add Medicine</button>
+    </div>
+
+    <p class="section-title">📋 Today's Medicines</p>
+    <div id="medicines-list"></div>
+    <button class="btn btn-outline mb" onclick="checkMissed()">🔍 Check Missed Medicines</button>
+  </div>
+
+  <!-- Prescription tab -->
+  <div class="tab-content" id="senior-tab-prescription">
+    <div id="rx-display"></div>
+    <p class="section-title">💾 Save Prescription</p>
+    <div class="card">
+      <div class="input-group"><label>Patient Name</label><input type="text" id="rx-patient" placeholder="Full name"/></div>
+      <div class="input-row">
+        <div class="input-group"><label>Doctor Name</label><input type="text" id="rx-doctor" placeholder="Dr. Name"/></div>
+        <div class="input-group"><label>Hospital</label><input type="text" id="rx-hospital" placeholder="Hospital"/></div>
+      </div>
+      <div class="input-row">
+        <div class="input-group"><label>Date</label><input type="date" id="rx-date"/></div>
+        <div class="input-group"><label>Next Visit</label><input type="date" id="rx-next"/></div>
+      </div>
+      <div class="input-group"><label>Doctor Contact</label><input type="text" id="rx-contact" placeholder="Phone"/></div>
+      <div class="input-group"><label>Doctor Notes</label><textarea id="rx-notes" rows="3" placeholder="Notes from doctor..."></textarea></div>
+      <button class="btn btn-primary" onclick="savePrescription()">💾 Save Prescription</button>
+    </div>
+  </div>
+
+  <!-- History tab -->
+  <div class="tab-content" id="senior-tab-history">
+    <div class="metrics mb" style="grid-template-columns:1fr 1fr">
+      <div class="metric"><div class="metric-val" id="hist-taken" style="color:var(--green)">0</div><div class="metric-label">✅ Total Taken</div></div>
+      <div class="metric"><div class="metric-val" id="hist-missed" style="color:var(--red)">0</div><div class="metric-label">❌ Total Missed</div></div>
+    </div>
+    <div id="history-list"></div>
+    <button class="btn btn-outline" onclick="clearHistory()">🗑️ Clear History</button>
+  </div>
+
+  <!-- MediBot tab -->
+  <div class="tab-content" id="senior-tab-medibot">
+    <div class="card" style="border-left:3px solid var(--blue);margin-bottom:12px">
+      <p style="color:var(--muted2);font-size:.85em">🤖 Hi! I'm MediBot. Ask me anything about your medicines! 💊</p>
+    </div>
+    <div class="chat-box" id="chat-box"></div>
+    <p class="section-title" style="font-size:.85em">Quick Questions:</p>
+    <div class="quick-btns">
+      <button class="btn btn-outline btn-sm" onclick="quickQ('What medicines am I taking?')">💊 My medicines?</button>
+      <button class="btn btn-outline btn-sm" onclick="quickQ('What are the side effects?')">⚠️ Side effects?</button>
+      <button class="btn btn-outline btn-sm" onclick="quickQ('When should I take each medicine?')">⏰ When to take?</button>
+      <button class="btn btn-outline btn-sm" onclick="quickQ('Which medicines are running low?')">📦 Stock check?</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input type="text" id="chat-input" placeholder="Ask MediBot..." style="flex:1;padding:12px;background:var(--card);border:2px solid var(--border);border-radius:15px;color:#fff;font-family:var(--font);font-size:14px;outline:none" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="btn btn-primary btn-sm" onclick="sendChat()">📤</button>
+      <button class="btn btn-outline btn-sm" onclick="clearChat()">🗑️</button>
+    </div>
+  </div>
+
+  <!-- Settings tab -->
+  <div class="tab-content" id="senior-tab-settings">
+    <div class="card" id="senior-profile"></div>
+    <p class="section-title">📱 Send Alerts</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <button class="btn btn-outline" onclick="sendDailyReport()">📊 Daily Report</button>
+      <button class="btn btn-danger" onclick="sendEmergency()">🆘 Emergency!</button>
+    </div>
+    <button class="btn btn-outline" onclick="doLogout()">🚪 Logout</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE 4 — FAMILY DASHBOARD
+════════════════════════════════════════════════ -->
+<div class="page" id="page-family">
+  <div class="topbar">
+    <div>
+      <div style="color:rgba(255,255,255,.7);font-size:.72em">Monitoring 👀</div>
+      <div class="topbar-name" id="family-name">—</div>
+    </div>
+    <div class="topbar-right">
+      <div>💊 MediBridge</div>
+      <div style="font-weight:600">Family Member 👨‍👩‍👧</div>
+    </div>
+  </div>
+
+  <div class="metrics metrics-4" id="family-metrics" style="grid-template-columns:repeat(4,1fr)">
+    <div class="metric"><div class="metric-val" id="fm-total">0</div><div class="metric-label">💊</div></div>
+    <div class="metric"><div class="metric-val" id="fm-taken" style="color:var(--green)">0</div><div class="metric-label">✅</div></div>
+    <div class="metric"><div class="metric-val" id="fm-missed" style="color:var(--red)">0</div><div class="metric-label">❌</div></div>
+    <div class="metric"><div class="metric-val" id="fm-low" style="color:var(--yellow)">0</div><div class="metric-label">⚠️</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('family','status')">📊 Status</button>
+    <button class="tab-btn" onclick="switchTab('family','prescription')">📋 Rx</button>
+    <button class="tab-btn" onclick="switchTab('family','history')">📝 History</button>
+  </div>
+
+  <!-- Status tab -->
+  <div class="tab-content active" id="family-tab-status">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <p class="section-title" style="margin:0">Medicine Status</p>
+      <button class="btn btn-outline btn-sm" onclick="loadFamilyData()">↻ Refresh</button>
+    </div>
+    <div id="family-status-list"></div>
+    <p style="color:var(--muted);font-size:.75em;text-align:right" id="family-updated"></p>
+  </div>
+
+  <!-- Prescription tab -->
+  <div class="tab-content" id="family-tab-prescription">
+    <div id="family-rx-display"></div>
+  </div>
+
+  <!-- History tab -->
+  <div class="tab-content" id="family-tab-history">
+    <div id="family-history-list"></div>
+  </div>
+
+  <div class="px" style="margin-top:16px">
+    <button class="btn btn-outline" onclick="doLogout()">🚪 Logout</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── State ────────────────────────────────────────────────
+let currentRole = 'senior';
+let currentUser = null;
+
+// ── Navigation ───────────────────────────────────────────
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function selectRole(role) {
+  currentRole = role;
+  const emoji = role === 'senior' ? '👴' : '👨‍👩‍👧';
+  const name  = role === 'senior' ? 'Senior Citizen' : 'Family Member';
+  document.getElementById('auth-role-header').innerHTML = `
+    <div style="font-size:3em;animation:float 3s ease infinite;margin-bottom:8px">${emoji}</div>
+    <h2 class="logo-title">${name}</h2>
+    <p style="color:var(--muted);font-size:.85em">Welcome to MediBridge!</p>
+  `;
+  setAuthMode('login');
+  goTo('auth');
+}
+
+// ── Auth mode ─────────────────────────────────────────────
+function setAuthMode(mode) {
+  document.getElementById('form-login').style.display    = mode === 'login'    ? 'block' : 'none';
+  document.getElementById('form-register').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('auth-login-btn').className    = 'btn ' + (mode === 'login'    ? 'btn-primary' : 'btn-outline');
+  document.getElementById('auth-register-btn').className = 'btn ' + (mode === 'register' ? 'btn-primary' : 'btn-outline');
+  document.getElementById('login-error').textContent    = '';
+  document.getElementById('register-error').textContent = '';
+}
+
+// ── Login ─────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value.trim();
+  if (!username || !password) { document.getElementById('login-error').textContent = '❌ Fill all fields!'; return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Logging in...';
+  try {
+    const res  = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, password, role: currentRole}) });
+    const data = await res.json();
+    if (data.success) {
+      currentUser = data.user;
+      toast('✅ Welcome back, ' + currentUser.name + '!');
+      if (currentRole === 'senior') { loadSeniorDashboard(); goTo('senior'); }
+      else                          { loadFamilyDashboard();  goTo('family'); }
+    } else {
+      document.getElementById('login-error').textContent = '❌ ' + data.error;
+    }
+  } catch(e) { document.getElementById('login-error').textContent = '❌ Server error. Is Flask running?'; }
+  btn.disabled = false; btn.innerHTML = '🚀 Login to MediBridge';
+}
+
+// ── Register ──────────────────────────────────────────────
+async function doRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value.trim();
+  const confirm  = document.getElementById('reg-confirm').value.trim();
+  const errEl    = document.getElementById('register-error');
+  if (!name || !username || !password || !confirm) { errEl.textContent = '❌ Fill all fields!'; return; }
+  if (password !== confirm) { errEl.textContent = '❌ Passwords don\'t match!'; return; }
+  if (password.length < 4)  { errEl.textContent = '❌ Password too short!'; return; }
+  const btn = document.getElementById('register-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Creating...';
+  try {
+    const res  = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, username, password, role: currentRole}) });
+    const data = await res.json();
+    if (data.success) { toast('✅ Account created! Please login!'); setAuthMode('login'); }
+    else              { errEl.textContent = '❌ ' + data.error; }
+  } catch(e) { errEl.textContent = '❌ Server error.'; }
+  btn.disabled = false; btn.innerHTML = '✨ Create My Account';
+}
+
+// ── Logout ────────────────────────────────────────────────
+async function doLogout() {
+  await fetch('/api/logout', { method:'POST' });
+  currentUser = null;
+  goTo('landing');
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+function switchTab(dashboard, tab) {
+  document.querySelectorAll(`#page-${dashboard} .tab-btn`).forEach((b,i) => b.classList.remove('active'));
+  document.querySelectorAll(`#page-${dashboard} .tab-content`).forEach(c => c.classList.remove('active'));
+  const tabs = document.querySelectorAll(`#page-${dashboard} .tab-btn`);
+  tabs.forEach(b => { if(b.getAttribute('onclick').includes(`'${tab}'`)) b.classList.add('active'); });
+  const content = document.getElementById(`${dashboard}-tab-${tab}`);
+  if (content) content.classList.add('active');
+  if (tab === 'history')      loadHistory(dashboard);
+  if (tab === 'prescription') loadPrescription(dashboard);
+  if (tab === 'status')       loadFamilyData();
+}
+
+// ── Senior Dashboard ──────────────────────────────────────
+function loadSeniorDashboard() {
+  document.getElementById('senior-name').textContent = currentUser.name;
+  document.getElementById('senior-profile').innerHTML = `
+    <h3 style="color:#fff;margin-bottom:10px">👤 My Profile</h3>
+    <p style="color:var(--muted2);margin:5px 0">Name: ${currentUser.name}</p>
+    <p style="color:var(--muted2);margin:5px 0">Username: ${currentUser.username}</p>
+    <p style="color:var(--muted2);margin:5px 0">Role: Senior Citizen 👴</p>
+    <p style="color:var(--muted2);margin:5px 0">Date: ${new Date().toLocaleDateString('en-IN')}</p>
+  `;
+  loadMedicines();
+  loadLogoImage();
+}
+
+async function loadMedicines() {
+  try {
+    const res  = await fetch('/api/medicines');
+    const data = await res.json();
+    renderMedicines(data.medicines || []);
+  } catch(e) {
+    document.getElementById('medicines-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Cannot connect to server</p></div>';
+  }
+}
+
+function renderMedicines(medicines) {
+  const total = medicines.length;
+  const taken = medicines.filter(m => m.taken_today).length;
+  document.getElementById('sm-total').textContent = total;
+  document.getElementById('sm-taken').textContent = taken;
+  document.getElementById('sm-left').textContent  = total - taken;
+
+  const el = document.getElementById('medicines-list');
+  if (!medicines.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">💊</div><p>No medicines added yet.<br>Add your first medicine above!</p></div>`; return;
+  }
+  el.innerHTML = medicines.map((med, i) => {
+    const isLow  = med.remaining <= 5;
+    const cls    = med.taken_today ? 'taken' : (isLow ? 'low' : '');
+    const status = med.taken_today ? 'taken' : 'pending';
+    const stxt   = med.taken_today ? '✅ Taken' : '⏳ Pending';
+    return `
+    <div class="med-card ${cls}">
+      <div class="med-header">
+        <div>
+          <div class="med-name">💊 ${med.name}</div>
+          <div class="med-meta">${med.dosage} • ⏰ ${med.timing}</div>
+          <div class="med-remaining">📦 ${med.remaining} tablets left</div>
+          ${med.notes ? `<div class="med-notes">📝 ${med.notes}</div>` : ''}
+        </div>
+        <span class="med-status ${status}">${stxt}</span>
+      </div>
+      ${isLow ? `<p style="color:var(--yellow);font-size:.78em;margin-bottom:8px">⚠️ Low stock!</p>` : ''}
+      <div class="med-actions">
+        ${!med.taken_today
+          ? `<button class="btn btn-green btn-sm" style="flex:1" onclick="takeMedicine(${i})">✅ Took it!</button>`
+          : `<div style="flex:1"></div>`
+        }
+        <button class="btn btn-outline btn-sm" onclick="deleteMedicine(${i})" style="padding:8px 12px">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function addMedicine() {
+  const name   = document.getElementById('med-name').value.trim();
+  const dosage = document.getElementById('med-dosage').value.trim();
+  const timing = document.getElementById('med-timing').value;
+  const total  = document.getElementById('med-total').value;
+  const notes  = document.getElementById('med-notes').value.trim();
+  if (!name || !dosage || !total) { toast('❌ Fill Medicine Name, Dosage and Tablets!', 'error'); return; }
+  const btn = document.getElementById('add-med-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Adding...';
+  try {
+    const res  = await fetch('/api/medicines', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, dosage, timing, total: parseInt(total), notes}) });
+    const data = await res.json();
+    if (data.success) {
+      toast('✅ ' + name + ' added!');
+      document.getElementById('med-name').value = '';
+      document.getElementById('med-dosage').value = '';
+      document.getElementById('med-total').value = '';
+      document.getElementById('med-notes').value = '';
+      renderMedicines(data.medicines);
+    } else { toast('❌ ' + data.error, 'error'); }
+  } catch(e) { toast('❌ Server error', 'error'); }
+  btn.disabled = false; btn.innerHTML = '➕ Add Medicine';
+}
+
+async function takeMedicine(index) {
+  try {
+    const res  = await fetch(`/api/medicines/${index}/take`, { method:'POST' });
+    const data = await res.json();
+    if (data.success) {
+      toast('✅ Medicine taken!' + (data.whatsapp_status === 'sent' ? ' 📱 Family notified!' : ''));
+      if (data.low_stock) toast('⚠️ Low stock alert sent!');
+      renderMedicines(data.medicines);
+    } else { toast('❌ ' + data.error, 'error'); }
+  } catch(e) { toast('❌ Server error', 'error'); }
+}
+
+async function deleteMedicine(index) {
+  if (!confirm('Remove this medicine?')) return;
+  try {
+    const res  = await fetch(`/api/medicines/${index}`, { method:'DELETE' });
+    const data = await res.json();
+    if (data.success) { toast('🗑️ Removed!'); renderMedicines(data.medicines); }
+    else { toast('❌ ' + data.error, 'error'); }
+  } catch(e) { toast('❌ Server error', 'error'); }
+}
+
+async function checkMissed() {
+  const res  = await fetch('/api/whatsapp/check-missed', { method:'POST' });
+  const data = await res.json();
+  if (data.missed && data.missed.length > 0) toast('❌ Missed: ' + data.missed.join(', '), 'error');
+  else toast('✅ All medicines on track!');
+}
+
+// ── History ───────────────────────────────────────────────
+async function loadHistory(dashboard) {
+  const res  = await fetch('/api/history');
+  const data = await res.json();
+  const history = data.history || [];
+  const taken  = history.filter(h => h.action === 'Taken').length;
+  const missed = history.filter(h => h.action === 'Missed').length;
+
+  if (dashboard === 'senior') {
+    document.getElementById('hist-taken').textContent  = taken;
+    document.getElementById('hist-missed').textContent = missed;
+    const el = document.getElementById('history-list');
+    if (!history.length) { el.innerHTML = '<div class="empty"><div class="icon">📊</div><p>No history yet!</p></div>'; return; }
+    el.innerHTML = [...history].reverse().map(r => {
+      const cls  = r.action.toLowerCase();
+      const icon = r.action === 'Taken' ? '✅' : r.action === 'Missed' ? '❌' : r.action === 'Deleted' ? '🗑️' : '➕';
+      return `<div class="history-record ${cls}"><p style="color:#fff;font-size:.88em;font-weight:600">${icon} ${r.medicine} — ${r.action}</p><p style="color:var(--muted);font-size:.75em;margin-top:3px">🕐 ${r.time}</p></div>`;
+    }).join('');
+  } else {
+    const el = document.getElementById('family-history-list');
+    if (!history.length) { el.innerHTML = '<div class="empty"><div class="icon">📝</div><p>No activity yet!</p></div>'; return; }
+    el.innerHTML = [...history].reverse().slice(0, 15).map(r => {
+      const icon = r.action === 'Taken' ? '✅' : r.action === 'Missed' ? '❌' : '➕';
+      const cls  = r.action.toLowerCase();
+      return `<div class="history-record ${cls}"><p style="color:#fff;font-size:.85em;font-weight:600">${icon} ${r.medicine} — ${r.action}</p><p style="color:var(--muted);font-size:.75em;margin-top:2px">🕐 ${r.time}</p></div>`;
+    }).join('');
+  }
+}
+
+async function clearHistory() {
+  if (!confirm('Clear all history?')) return;
+  await fetch('/api/history', { method:'DELETE' });
+  toast('✅ History cleared!');
+  loadHistory('senior');
+}
+
+// ── Prescription ──────────────────────────────────────────
+async function loadPrescription(dashboard) {
+  const res  = await fetch('/api/prescription');
+  const data = await res.json();
+  const rx   = data.prescription;
+  const elId = dashboard === 'senior' ? 'rx-display' : 'family-rx-display';
+  if (!rx) {
+    document.getElementById(elId).innerHTML = '<div class="empty"><div class="icon">📋</div><p>No prescription saved yet!</p></div>';
+    return;
+  }
+  document.getElementById(elId).innerHTML = `
+    <div class="rx-card">
+      <h3>👴 ${rx.patient_name}</h3>
+      <p>👨‍⚕️ Dr. ${rx.doctor_name}</p>
+      <p>🏥 ${rx.hospital_name || 'N/A'}</p>
+      <p>📅 ${rx.date}</p>
+      <p>📅 Next Visit: ${rx.next_visit || 'N/A'}</p>
+      <p>📞 ${rx.contact || 'N/A'}</p>
+      <p style="color:#fff;margin-top:10px">📝 ${rx.notes || 'None'}</p>
+    </div>`;
+}
+
+async function savePrescription() {
+  const data = {
+    patient_name: document.getElementById('rx-patient').value.trim(),
+    doctor_name:  document.getElementById('rx-doctor').value.trim(),
+    hospital_name: document.getElementById('rx-hospital').value.trim(),
+    date:          document.getElementById('rx-date').value,
+    next_visit:    document.getElementById('rx-next').value,
+    contact:       document.getElementById('rx-contact').value.trim(),
+    notes:         document.getElementById('rx-notes').value.trim()
+  };
+  if (!data.patient_name || !data.doctor_name) { toast('❌ Fill patient and doctor name!', 'error'); return; }
+  const res = await fetch('/api/prescription', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  const result = await res.json();
+  if (result.success) { toast('✅ Prescription saved!'); loadPrescription('senior'); }
+  else toast('❌ ' + result.error, 'error');
+}
+
+// ── MediBot ───────────────────────────────────────────────
+function quickQ(q) {
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+  appendChat('user', q);
+  appendChat('bot', '<span class="spinner"></span>Thinking...');
+  try {
+    const res  = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question: q}) });
+    const data = await res.json();
+    removeLastBot();
+    appendChat('bot', data.success ? data.response : '❌ ' + data.error);
+  } catch(e) { removeLastBot(); appendChat('bot', '❌ Server error. Try again!'); }
+}
+
+function appendChat(role, msg) {
+  const box = document.getElementById('chat-box');
+  const div = document.createElement('div');
+  div.className = role === 'user' ? 'chat-msg-user' : 'chat-msg-bot';
+  div.innerHTML = (role === 'bot' ? '🤖 ' : '') + msg;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function removeLastBot() {
+  const box  = document.getElementById('chat-box');
+  const bots = box.querySelectorAll('.chat-msg-bot');
+  if (bots.length) bots[bots.length - 1].remove();
+}
+
+function clearChat() {
+  document.getElementById('chat-box').innerHTML = '';
+}
+
+// ── WhatsApp ──────────────────────────────────────────────
+async function sendDailyReport() {
+  const res  = await fetch('/api/whatsapp/daily-report', { method:'POST' });
+  const data = await res.json();
+  toast(data.success ? '✅ Daily report sent!' : '❌ ' + data.error, data.success ? 'success' : 'error');
+}
+
+async function sendEmergency() {
+  if (!confirm('Send emergency alert to family?')) return;
+  const res  = await fetch('/api/whatsapp/emergency', { method:'POST' });
+  const data = await res.json();
+  toast(data.success ? '🆘 Emergency alert sent!' : '❌ ' + data.error, data.success ? 'success' : 'error');
+}
+
+// ── Family Dashboard ──────────────────────────────────────
+function loadFamilyDashboard() {
+  document.getElementById('family-name').textContent = currentUser.name;
+  loadFamilyData();
+}
+
+async function loadFamilyData() {
+  try {
+    const [medRes, sumRes] = await Promise.all([fetch('/api/medicines'), fetch('/api/summary')]);
+    const medData = await medRes.json();
+    const sumData = await sumRes.json();
+
+    document.getElementById('fm-total').textContent  = sumData.total;
+    document.getElementById('fm-taken').textContent  = sumData.taken;
+    document.getElementById('fm-missed').textContent = sumData.missed;
+    document.getElementById('fm-low').textContent    = sumData.low_stock;
+    document.getElementById('family-updated').textContent = 'Last updated: ' + sumData.last_updated;
+
+    const medicines = medData.medicines || [];
+    const el = document.getElementById('family-status-list');
+    if (!medicines.length) {
+      el.innerHTML = '<div class="empty"><div class="icon">👀</div><p>No medicines to monitor yet.</p></div>'; return;
+    }
+    el.innerHTML = medicines.map(med => {
+      const isLow    = med.remaining <= 5;
+      const taken    = med.taken_today;
+      const dotColor = taken ? 'var(--green)' : 'var(--red)';
+      const stxt     = taken ? '✅ Taken!' : '❌ Not taken!';
+      const scolor   = taken ? 'var(--green)' : 'var(--red)';
+      return `
+      <div class="med-card" style="border-left-color:${dotColor}">
+        <div class="med-header">
+          <div>
+            <div class="med-name">💊 ${med.name}</div>
+            <div class="med-meta">${med.dosage} • ${med.timing}</div>
+            <div class="med-remaining">📦 ${med.remaining} left${isLow ? ' ⚠️' : ''}</div>
+          </div>
+          <span class="med-status ${taken ? 'taken' : 'pending'}">${stxt}</span>
+        </div>
+        ${isLow ? `<p style="color:var(--yellow);font-size:.78em">⚠️ Low stock! Only ${med.remaining} left!</p>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('family-status-list').innerHTML = '<div class="empty"><div class="icon">⚠️</div><p>Cannot connect to server</p></div>';
+  }
+}
+
+// ── Logo ──────────────────────────────────────────────────
+function loadLogoImage() {
+  const c = document.getElementById('logo-container');
+  if (!c) return;
+  const img = new Image();
+  img.onload = () => { c.innerHTML = `<img src="Logo.jpeg" class="logo-img"/>`; };
+  img.onerror = () => {
+    c.innerHTML = `<div class="logo-icon-fallback">💊</div><h1 class="logo-title">MediBridge</h1>`;
+  };
+  img.src = 'Logo.jpeg';
+}
+
+// ── Toast ─────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = type === 'error' ? 'show error' : 'show';
+  clearTimeout(window._toast);
+  window._toast = setTimeout(() => el.className = '', 3500);
+}
+
+// ── Init ──────────────────────────────────────────────────
+loadLogoImage();
+// Auto-refresh family every 30s
+setInterval(() => {
+  if (document.getElementById('page-family').classList.contains('active')) loadFamilyData();
+}, 30000);
+</script>
+</body>
+</html>

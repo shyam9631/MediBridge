@@ -17,14 +17,6 @@
         "notes": ""
     },
     {
-        "name": "Paracetamol",
-        "dosage": "600",
-        "timing": "Morning",
-        "total": 30,
-        "remaining": 29,
-        "taken_today": false
-    },
-    {
         "name": "paracetamol",
         "dosage": "6650",
         "timing": "Morning",
@@ -37,8 +29,8 @@
         "dosage": "50",
         "timing": "After Food",
         "total": 5,
-        "remaining": 3,
-        "taken_today": false,
+        "remaining": 2,
+        "taken_today": true,
         "notes": ""
     }
 ]
