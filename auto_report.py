@@ -27,7 +27,7 @@ def send_nightly_report():
         print("✅ All medicines taken today! No alert needed!")
 
 # Schedule report at 10 PM
-schedule.every(2).minutes.do(send_nightly_report)
+schedule.every().day.at("22:00").do(send_nightly_report)
 
 print("=" * 45)
 print("   MediBridge Auto Reporter Running!")
